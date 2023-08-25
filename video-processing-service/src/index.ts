@@ -1,8 +1,10 @@
 import express from "express";
 import ffmpeg from "fluent-ffmpeg"
+import ffmpegInstaller from "@ffmpeg-installer/ffmpeg"
 
+ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 const app = express();
-app.use(express.json)
+app.use(express.json());
 
 app.post("/process-video", (req,res) => {
   // Get path of the input video file from the request body
@@ -13,10 +15,10 @@ app.post("/process-video", (req,res) => {
     res.status(400).send("Bad Request: Missing file path.");
   }
 
-  ffmpeg(inputFilePath).outputOption("-vf","scale=-1:360") // 360p
+  ffmpeg(inputFilePath).outputOptions("-vf","scale=-1:360") // 360p
   .on("end", () => {
-
-    res.status(200).send("Video processsing finished successfully.");
+    console.log('Processing finished successfully');
+    res.status(200).send('Processing finished successfully');
   })
   .on("error", (err) => {
     console.log(`An error occured: ${err.message}`)
